@@ -47,7 +47,7 @@ function originalDataMonths() {
 
   // TODO: 1.6 use a value function for setting text of each element instead of a fixed 'hallo'.
   // The first parameter of the value function is now always the data item that is now bound to that element, but only if you used the data function to bind data.
-  // Our dataitems contain a 'label' and 'percentage' property. change the text content of the each text element to label: percentage%
+  // Our data-items contain a 'label' and 'percentage' property. change the text content of the each text element to label: percentage%
 
   //TODO Extra: all of the steps you did above can be also be written as one chain, rewrite the code as one chain.
   d3.select('#months')
@@ -62,8 +62,8 @@ function originalDataMonths() {
   // TODO: 2.1 now that you've appended our text elements, you can update them without having to bind again.
   // Use the d3.select function to select a text element (automatically the first).
   // Change it's text to contain a percentage sign `${d.label}: ${d.percentage}%`
-  // Notice that the dataitem is still available in the value function, even though you created a new selection. 
-  // This is because D3 which dataitem is bound the which DOM element.
+  // Notice that the data-item is still available in the value function, even though you created a new selection.
+  // This is because D3 which data-item is bound the which DOM element.
   d3.select('text')
     .text((d, _index) => `${d.label}: ${d.percentage}%`);
 
@@ -73,12 +73,6 @@ function originalDataMonths() {
   const textElementSelection = d3.select('#months')
     .selectAll('text')
     .text((d, _index) => `${d.label}: ${d.percentage}%`);
-
-
- TODO MARCEL: extra opdracht sorteren van elementen op basis van de selection met sort en op basis van de data met order
-  // textElementSelection
-  //   .sort((a, b) => a.percentage > b.percentage ? 1 : -1)
-  //   .attr('y', (_d, index) => 25 * (index + 1));
 }
 
 /**
@@ -131,9 +125,9 @@ function extendedDataMonths() {
     .attr('y', (_d, index) => 20 * (index + 1))
     .text((d, _index) => `- ${d.label}: ${d.percentage}%`);
 
-  // Note: As you can see it is not always a good idea to chain everything up, because the functions return different (stages of) the selection.
+  // Note: As you can see it is not always possible to chain everything up, because the functions return different (virtual) selections.
   // Sometimes you need to split the chain because you need to use different selections, like the already existing elements and the newly appended elements.
-  // On the other hand, if you need to perform manipulations on ALL elements, a function like merge can be used.
+  // On the other hand, if you need to perform manipulations on both the appended and existing elements, a function like merge can be used.
 }
 
 /**
@@ -144,8 +138,8 @@ function truncatedDataMonths() {
   // const truncatedDataset = dataset.slice(0, 5);
   const truncatedDataset = dataset.slice(6, 9);
 
-  //TODO: 4.1 let's remove some of our dataitems and try it the other way around. 
-  // The truncatedDataset only contains the first couple of dataitems.
+  //TODO: 4.1 let's remove some of our data-items and try it the other way around. 
+  // The truncatedDataset only contains the first couple of data-items.
   // Select all text elements again and call the data function with the truncatedDataset.
   // Now we can get the selection of elements that need to be removed by calling the exit() function.
   // To remove elements from the DOM with D3 you call the remove() method on a selection.
@@ -166,7 +160,7 @@ function truncatedDataMonths() {
   // The list is displaying jan, feb, ma while the truncatedDataSet contains jul, aug, sep
   // This is because D3 uses the data and elements index position to determine which item should be removed / appended
   // We could fix this by selecting every element again and chance the text, but again that's not really DRY.
-  // Instead, we need a unique key for every databound element so D3 knows which dataitem belongs to which element based on that key instead of index/position.
+  // Instead, we need a unique key for every databound element so D3 knows which data-item belongs to which element based on that key instead of index/position.
   // You can specify such a key with the second parameter of the data() function.
   // This second parameter is a value function which will receive the corresponding data item and returns a unique key.
   // Luckily, we have a unique identifier in our data in the form of the id property.
@@ -229,34 +223,79 @@ function joinedDataMonths() {
     .attr('y', (_d, index) => 25 * (index + 1))
     .text((d, _index) => `${d.label}: ${d.percentage}%`);
 
-    //TODO: 5.3 general update pattern inside the join function
-    // The join function makes updating our DOM really clean, but what if we want to stuff with our appended, removed and updated items?
-    // Instead of a string that with the name of the element that needs to be appended by the enter selection,
-    // the join function also accepts three functions as parameters that respectively represent enter, update and exit.
-    // Using the shorthand usage of .join('text') can also be written like
-    //.join(
-    // (enter) => { return enter.append('text'); },
-    // (update) => { return update; },
-    // (exit) => { exit.remove(); }
-    // )
-    // - Use the enter, update and exit functions as parameters of the join function to give elements a different color with attr 'fill'.
-    // - Make appended text elements green, removed elements red (don't remove them ;)) and edited elements blue.
-    // Notice that our list of elements is crooked again. This is because our y uses the index to position elements
-    // but the exited dataitems are removed from the merged selection after the join.
-    // - To fix this visually, set the x of the exited elements to 100.
-    // Note: the parameter you receive inside every join function is the enter, update or exit selection.
-    // Note: notice the position of 'ma'. the join has also updated the order of elements.
+  //TODO: 5.3 general update pattern inside the join function
+  // The join function makes updating our DOM really clean, but what if we want to stuff with our appended, removed and updated items?
+  // Instead of a string that with the name of the element that needs to be appended by the enter selection,
+  // the join function also accepts three functions as parameters that respectively represent enter, update and exit.
+  // Using the shorthand usage of .join('text') can also be written like
+  //.join(
+  // (enter) => { return enter.append('text'); },
+  // (update) => { return update; },
+  // (exit) => { exit.remove(); }
+  // )
+  // - Use the enter, update and exit functions as parameters of the join function to give elements a different color with attr 'fill'.
+  // - Make appended text elements green, removed elements red (don't remove them ;)) and edited elements blue.
+  // Notice that our list of elements is crooked again. This is because our y uses the index to position elements
+  // but the exited data-items are removed from the merged selection after the join.
+  // - To fix this visually, set the x of the exited elements to 100.
+  // Note: the parameter you receive inside every join function is the enter, update or exit selection.
+  // Note: notice the position of 'ma'. the join has also updated the order of elements.
 
-  //TODO Extra: To visualize what the heck has happened just now, uncomment the code below to display the original list besides the current one
-  d3.select('#joined-months').append('g')
+  //TODO 5.4: To visualize what the heck has happened just now, uncomment the code below to display the original list besides the current one
+  const originalMonthsSelection = d3.select('#joined-months').append('g')
     .selectAll('text')
     .data(dataset, (d) => d.id)
     .enter()
     .append('text')
     .attr('x', 300)
-    .attr('y', (_d, index) => 25 * (index + 1))
+    .attr('y', (_d, index) => 20 * (index + 1))
+    .text((d, _index) => `${d.label}: ${d.percentage}%`);
+
+
+  //TODO 5.5: As you may have noticed, join also sorted the elements in the DOM in the order of the dataset.
+  // It used the order() function to do that.
+  // Note that, although the DOM elements have been sorted, the y position remains the same.
+  // So you still need to set the right y value for every element after the sorting has taken placed.
+  // - make a copy of the original dataset array and sort the copy by percentage value
+  // - bind the sortedDataset to the originalMonthsSelection and call the order function (don't forget the key parameter)
+  // - after ordering the DOM elements, update the y positions so the list is displayed in the correct order
+  const sortedData = [...dataset];
+  sortedData.sort((a, b) => a.percentage > b.percentage ? 1 : -1);
+
+  originalMonthsSelection
+    .data(sortedData, (d) => d.id)
+    .order()
+    .attr('y', (_d, index) => 20 * (index + 1));
+
+  // Note that there is another D3 function Selection.sort() that sorts the data that is bound to the selection 
+  // as well as sorting the DOM elements, but it does not sort the original dataset!
+  // Usually it is better to just sort the dataset itself and then bind it with data() and use order().
+  // Then your data, the selection/bound data, the DOM elements and the actually list displayed are all in the same order. 
+}
+
+/**
+ * Adding a sublist to a list-item by binding a dataset to a selection using datum();
+ */
+function singularDataMonth() {
+  //TODO: 6.1 Until now you used the data() function to bind, join and update data to multiple elements in a selection.
+  // There is another function called datum() that is used for static vizualization which does not need updates,
+  // and will do no joining nor will it provide update, enter and exit functions or selections.
+  // The datum function binds the data as a whole to each element in the selection. 
+  // Oftentimes the selection only contains on element when datum is used.
+  // You could for example use datum to update the data-item of a single list-item:
+  // - select a single (automatically the first) text element of the #joined-months
+  // - update its data to customDataItem using the datum function
+  // - update the displayed text of the element
+  // - see what happens when you selectAll text elements instead of one
+  // - console.log the data of your selection and see the data changes
+  const customDataItem = { id: 1, label: 'januari', percentage: 40 };
+  const oo = d3.select('#joined-months').select('text')
+    .datum(customDataItem)
     .text((d, _index) => `${d.label}: ${d.percentage}%`);
 }
+
+function
+  TODO: gebruik nu alles wat je geleerd hebt om een de rects van een barchart te maken, de assen heb ik alvast gemaakt
 
 //###### readonly ######
 
@@ -291,6 +330,7 @@ originalDataMonths();
 extendedDataMonths();
 truncatedDataMonths();
 joinedDataMonths();
+singularDataMonth();
 
 
 //###### end readonly ######
