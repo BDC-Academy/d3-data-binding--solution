@@ -181,7 +181,7 @@ function truncatedDataMonths() {
 function joinedDataMonths() {
   //TODO: 5.1 let's do it all again!
   // But now we will try and do it all in one chain using the D3 join function.
-  // First, create the original list again but this time with the '#joined-months' svg as parent.
+  // First, create the original list again but this time with the '#joined-months' svg as parent element.
   // Don't forget the unique identifier in the data function.
   d3.select('#joined-months')
     .selectAll('text')
@@ -224,8 +224,8 @@ function joinedDataMonths() {
     .text((d, _index) => `${d.label}: ${d.percentage}%`);
 
   //TODO: 5.3 general update pattern inside the join function
-  // The join function makes updating our DOM really clean, but what if we want to stuff with our appended, removed and updated items?
-  // Instead of a string that with the name of the element that needs to be appended by the enter selection,
+  // The join function makes updating our DOM really clean, but what if we want to do stuff with our appended, removed and updated items?
+  // Instead of a string with the name of the element that needs to be appended by the enter selection,
   // the join function also accepts three functions as parameters that respectively represent enter, update and exit.
   // Using the shorthand usage of .join('text') can also be written like
   //.join(
@@ -233,7 +233,7 @@ function joinedDataMonths() {
   // (update) => { return update; },
   // (exit) => { exit.remove(); }
   // )
-  // - Use the enter, update and exit functions as parameters of the join function to give elements a different color with attr 'fill'.
+  // - Use the enter, update and exit functions to give elements a different color with attr 'fill'.
   // - Make appended text elements green, removed elements red (don't remove them ;)) and edited elements blue.
   // Notice that our list of elements is crooked again. This is because our y uses the index to position elements
   // but the exited data-items are removed from the merged selection after the join.
@@ -277,25 +277,90 @@ function joinedDataMonths() {
  * Adding a sublist to a list-item by binding a dataset to a selection using datum();
  */
 function singularDataMonth() {
-  //TODO: 6.1 Until now you used the data() function to bind, join and update data to multiple elements in a selection.
-  // There is another function called datum() that is used for static vizualization which does not need updates,
-  // and will do no joining nor will it provide update, enter and exit functions or selections.
-  // The datum function binds the data as a whole to each element in the selection. 
-  // Oftentimes the selection only contains on element when datum is used.
-  // You could for example use datum to update the data-item of a single list-item:
-  // - select a single (automatically the first) text element of the #joined-months
-  // - update its data to customDataItem using the datum function
-  // - update the displayed text of the element
-  // - see what happens when you selectAll text elements instead of one
-  // - console.log the data of your selection and see the data changes
+  // Until now you used the data() function to bind, join and update an array of data to multiple elements in a selection.
+  // There is another function called datum() that binds a single unit of data to a selection.
+  // The datum function will bind the data 'as is' to each element in the selection and will do no joining nor will it provide update, enter and exit functions to the selection.
+  // If you pass an array to the datum function, each element in the selection will have the same array bound to it.
+  // data = plural and datum = singular.
+  // Oftentimes the selection that uses datum, only contains one element.
+  // Datum is mainly used with static vizualization, that does not need dynamic updates.
+
+  //TODO: 6.1 create our original list again in #singular-months, but wrap it in a g element
+  // - append a g element to the svg #singular-months
+  // - add our original list created with dataset to the g element
+  // Note: wrapping our list in a g element will make selecting (only) the list elements easier later on
+  d3.select('#singular-months')
+    .append('g')
+    .selectAll('text')
+    .data(dataset, (d) => d.id)
+    .enter()
+    .append('text')
+    .attr('x', 200)
+    .attr('y', (_d, index) => 25 * (index + 1))
+    .text((d, _index) => `${d.label}: ${d.percentage}%`);
+
+  // TODO: 6.2 Let's use datum to update a single element:
+  // - select the #singular-months svg and then select the first text element in it (.select always selects the first)
+  // - update its bound data to customDataItem using the datum function
+  // - update the displayed text of the element using the text function
+  // - selectAll text elements in #months and console.log the data of that selection
+  // - see what happens when you use selectAll before using datum instead of select
   const customDataItem = { id: 1, label: 'januari', percentage: 40 };
-  const oo = d3.select('#joined-months').select('text')
+  d3.select('#singular-months').select('text')
     .datum(customDataItem)
     .text((d, _index) => `${d.label}: ${d.percentage}%`);
+
+  // const allSelection = d3.select('#months').selectAll('text')
+  // console.log(allSelection.data());
+
+  //TODO: 6.3 display the number of elements in our dataset with the use of datum
+  // - append a text element to #singular-months and position it at x 20, y 20
+  // - use the datum function and supply the dataset as datum for the text element
+  // - use the text function to display the length of the list
+  // Note: because we used datum, the list will be available as parameter 'd' in the value function of text
+  d3.select('#singular-months')
+    .append('text')
+    .datum(dataset)
+    .attr('x', 20)
+    .attr('y', 20)
+    .text((d) => `length: ${d.length}`);
+
+  // TODO: 6.3 Add another text element that displays the total (added up) percentages of our current list with datum
+  // - first, select all text elements that are inside the g element of #singular-months and store their data() in a variable
+  // - append another text element to #singular-months and position it at x 20, y 40
+  // - use the datum function and supply the data we got from our text elements as datum for the text element
+  // - use the text function to display the sum of the percentages of all items (you can do this by using the array reduce function) 
+  const currentSelectionData = d3.select('#singular-months').select('g').selectAll('text').data();
+  d3.select('#singular-months')
+    .append('text')
+    .datum(currentSelectionData)
+    .attr('x', 20)
+    .attr('y', 40)
+    .text((d) => `total: ${d.reduce((total, next) => total + next.percentage, 0)}%`);
 }
 
-function
-  TODO: gebruik nu alles wat je geleerd hebt om een de rects van een barchart te maken, de assen heb ik alvast gemaakt
+//   TODO: gebruik nu alles wat je geleerd hebt om een de rects van een barchart te maken, de assen heb ik alvast gemaakt
+function columnDataMonths() {
+  const padding = 6;
+  const maxPercentage = Math.max(...dataset.map((d) => d.percentage));
+  const rectWidth = width / dataset.length - padding;
+  const rectHeight = (d) => d.percentage / maxPercentage * height;
+
+  d3.select('#column-months')
+    .selectAll('rect')
+    .data(dataset)
+    .enter()
+    .append('rect')
+    .attr('fill', 'blue')
+    .attr('width', rectWidth)
+    .attr('height', rectHeight)
+    .attr('y', (d) => height - rectHeight(d))
+    .attr('x', (d, index) => index * (rectWidth + padding))
+
+
+}
+
+//TODO MARCEL: ook nested selections en toevoegen / verwijderen elementen in de introductie repo.kunt values in de bubbles toevoegen selectAll.append en selectAll('circle').select(text)
 
 //###### readonly ######
 
@@ -326,11 +391,14 @@ const dataset = [
 const width = 400, height = 400;
 const svgMonthsSelection = createSVGSVGElement(width, height, 'months');
 const svgJoinedMonthsSelection = createSVGSVGElement(width, height, 'joined-months');
+const svgSingularMonthsSelection = createSVGSVGElement(width, height, 'singular-months');
+const svgColumnMonthsSelection = createSVGSVGElement(width, height, 'column-months');
 originalDataMonths();
 extendedDataMonths();
 truncatedDataMonths();
 joinedDataMonths();
 singularDataMonth();
+columnDataMonths();
 
 
 //###### end readonly ######
