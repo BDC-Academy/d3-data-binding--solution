@@ -274,7 +274,7 @@ function joinedDataMonths() {
 }
 
 /**
- * Adding a sublist to a list-item by binding a dataset to a selection using datum();
+ * Calculating length and total percentage of our list using D3 datum();
  */
 function singularDataMonth() {
   // Until now you used the data() function to bind, join and update an array of data to multiple elements in a selection.
@@ -339,13 +339,19 @@ function singularDataMonth() {
     .text((d) => `total: ${d.reduce((total, next) => total + next.percentage, 0)}%`);
 }
 
-//   TODO: gebruik nu alles wat je geleerd hebt om een de rects van een barchart te maken, de assen heb ik alvast gemaakt
+/**
+ * Create the rects of a barchart based on our dataset using D3 selection and databinding
+ */
 function columnDataMonths() {
-  const padding = 6;
+  const xPadding = 6;
   const maxPercentage = Math.max(...dataset.map((d) => d.percentage));
-  const rectWidth = width / dataset.length - padding;
+  const rectWidth = width / dataset.length - xPadding;
   const rectHeight = (d) => d.percentage / maxPercentage * height;
 
+  // TODO: 7.1 use D3 selection and databinding to create rects that represent a columnchart, based on the original dataset.
+  // - select the #column-months svg
+  // - select all rect's, bind the dataset to the selection and create the rect's
+  // - use the rectWidth, rectHeight and padding to set the size and calculate the position of the rects
   d3.select('#column-months')
     .selectAll('rect')
     .data(dataset)
@@ -355,10 +361,56 @@ function columnDataMonths() {
     .attr('width', rectWidth)
     .attr('height', rectHeight)
     .attr('y', (d) => height - rectHeight(d))
-    .attr('x', (d, index) => index * (rectWidth + padding))
+    .attr('x', (d, index) => index * (rectWidth + xPadding));
+
+  // TODO: 7.2 use the dataset, selection and databinding to add labels to the top of each rect
+  // - use the same values to position the text elements but add 14 px to the y position and set the text fill to white
+  d3.select('#column-months')
+    .selectAll('text')
+    .data(dataset)
+    .enter()
+    .append('text')
+    .attr('fill', 'white')
+    .attr('y', (d) => height - rectHeight(d) + 14)
+    .attr('x', (d, index) => index * (rectWidth + xPadding))
+    .text((d) => `${d.label}`);
+
+  const updatedDataset = [
+    { id: 1, label: 'jan', percentage: 25 }, { id: 2, label: 'feb', percentage: 23 },
+    { id: 4, label: 'apr', percentage: 97 },
+    { id: 7, label: 'jul', percentage: 58 }, { id: 8, label: 'aug', percentage: 62 },
+    { id: 13, label: 'jan2', percentage: 34 }, { id: 14, label: 'nov2', percentage: 65 },
+    { id: 3, label: 'ma', percentage: 44 }
+  ];
+
+  // TODO: 7.3 update the columns and labels using the updatedDataset
+  // - select all rect, bind the updated data and use join to merge the datasets. 
+  // - set the new height, y and x (width and fill don't change)
+  // - select all text and update them as well using join, x, y and text 
+  d3.select('#column-months')
+    .selectAll('rect')
+    .data(updatedDataset)
+    .join('rect')
+    .attr('height', rectHeight)
+    .attr('y', (d) => height - rectHeight(d))
+    .attr('x', (d, index) => index * (rectWidth + xPadding))
+
+  d3.select('#column-months')
+    .selectAll('text')
+    .data(updatedDataset)
+    .join('text')
+    .attr('y', (d) => height - rectHeight(d) + 14)
+    .attr('x', (d, index) => index * (rectWidth + xPadding))
+    .text((d) => `${d.label}`);
 
 
+  // TODO Extra: you needed to select the rect and text element separately in order to update them with the same values for x. 
+  // That's not really DRY and you can imagine more elements would need the same x positioning, like another label or a circle representing a datapoint for a line.
+  // There is a way to make this dry-er and easier to update by grouping elements together with a g element and binding the data to the group.
+  // We will start using this later on, but for now watch your friendly neighbourhood trainer give an example of this using the DRYing.js file :)
 }
+
+
 
 //TODO MARCEL: ook nested selections en toevoegen / verwijderen elementen in de introductie repo.kunt values in de bubbles toevoegen selectAll.append en selectAll('circle').select(text)
 
