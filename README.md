@@ -8,3 +8,4 @@ https://bl.ocks.org/mbostock/3808218
 https://github.com/d3/d3-selection/blob/v3.0.0/README.md#selection_datum
 https://www.intothevoid.io/data-visualization/understanding-d3-data-vs-datum/ 
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce 
+https://www.freecodecamp.org/news/how-to-work-with-d3-jss-general-update-pattern-8adce8d55418/
