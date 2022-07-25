@@ -23,7 +23,7 @@ function groupedColumnDataMonths() {
   * This is where an often used D3 trick comes into play:
   * - since our rect selection is a nested selection of g, each nested rect selection gets scces to the datum that is bound to that g element.
   * - to generate our enter, update en remove selections for the rect we need to call data on the rect selection and supply an array to it
-  * - if you call the data function with a value function as argument you get the datum item just like when you use the attr function
+  * - if you call the data function with a accessor function as argument you get the datum item just like when you use the attr function
   * - again, the data function needs an array so we take our datum from the g element, wrap it in an array and return it
   * - now we have bound an array of 1 item to our nested rect selection and our enter, update and remove selections can be used.
   * We just use join and set all the attributes of each rect EXCEPT the x position because we already took care of that by translating the group.

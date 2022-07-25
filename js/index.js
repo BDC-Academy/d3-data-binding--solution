@@ -36,7 +36,7 @@ function originalDataMonths() {
 
   // // TODO: 1.5 add the missing text elements to the DOM using the append function and set
   // // the y and x attributes of each text element using the chaining syntax.
-  // // Use a value function to calculate what the y must be using the index (second parameter of the value function) and set the y 30 pixels apart.
+  // // Use a accessor function to calculate what the y must be using the index (second parameter of the accessor function) and set the y 30 pixels apart.
   // // Set the text of each element to 'hallo' using the .text() function on the selection.
   // // Note: 'text' is not an actual attribute of an svg element that you can set via attr (textContent is a property), that is why D3 provides a special .text() function to set the textContent
   // enterSelection
@@ -45,8 +45,8 @@ function originalDataMonths() {
   //   .attr('y', (_d, index) => 30 * (index + 1))
   //   .text((d, _index) => `${d.label}: ${d.percentage}%`);
 
-  // TODO: 1.6 use a value function for setting text of each element instead of a fixed 'hallo'.
-  // The first parameter of the value function is now always the data item that is now bound to that element, but only if you used the data function to bind data.
+  // TODO: 1.6 use a accessor function for setting text of each element instead of a fixed 'hallo'.
+  // The first parameter of the accessor function is now always the data item that is now bound to that element, but only if you used the data function to bind data.
   // Our data-items contain a 'label' and 'percentage' property. change the text content of the each text element to label: percentage%
 
   //TODO Extra: all of the steps you did above can be also be written as one chain, rewrite the code as one chain.
@@ -62,7 +62,7 @@ function originalDataMonths() {
   // TODO: 2.1 now that you've appended our text elements, you can update them without having to bind again.
   // Use the d3.select function to select a text element (automatically the first).
   // Change it's text to contain a percentage sign `${d.label}: ${d.percentage}%`
-  // Notice that the data-item is still available in the value function, even though you created a new selection.
+  // Notice that the data-item is still available in the accessor function, even though you created a new selection.
   // This is because D3 which data-item is bound the which DOM element.
   d3.select('text')
     .text((d, _index) => `${d.label}: ${d.percentage}%`);
@@ -162,7 +162,7 @@ function truncatedDataMonths() {
   // We could fix this by selecting every element again and chance the text, but again that's not really DRY.
   // Instead, we need a unique key for every databound element so D3 knows which data-item belongs to which element based on that key instead of index/position.
   // You can specify such a key with the second parameter of the data() function.
-  // This second parameter is a value function which will receive the corresponding data item and returns a unique key.
+  // This second parameter is a accessor function which will receive the corresponding data item and returns a unique key.
   // Luckily, we have a unique identifier in our data in the form of the id property.
   // add the second parameter to every data function call we made until now and return our id property as the unique key.
   // After you've done that, the DOM should display jul, aug and sep in their original y position.
@@ -317,7 +317,7 @@ function singularDataMonth() {
   // - append a text element to #singular-months and position it at x 20, y 20
   // - use the datum function and supply the dataset as datum for the text element
   // - use the text function to display the length of the list
-  // Note: because we used datum, the list will be available as parameter 'd' in the value function of text
+  // Note: because we used datum, the list will be available as parameter 'd' in the accessor function of text
   d3.select('#singular-months')
     .append('text')
     .datum(dataset)
