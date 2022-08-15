@@ -411,9 +411,6 @@ function columnDataMonths() {
 }
 
 
-
-//TODO MARCEL: ook nested selections en toevoegen / verwijderen elementen in de introductie repo.kunt values in de bubbles toevoegen selectAll.append en selectAll('circle').select(text)
-
 //###### readonly ######
 
 function createSVGSVGElement(width, height, id) {
